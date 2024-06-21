@@ -23,21 +23,36 @@ function ITEM:AttachTrail( )
 
 		self.trailEnt = util.SpriteTrail( ply, 0, self.color, false, 15, 1, 4, 0.125, self.material .. ".vmt" )
 		timer.Simple( 1, function( )
-			self:ClientRPC( "TrailAdded", self.trailEnt )
+			if IsValid(ply) then
+				self:ClientRPC( "TrailAdded", ply, self.trailEnt )
+			end
 		end )
 	end
 end
 
-function ITEM:TrailAdded( trailEnt )
+function ITEM:TrailAdded( ply, trailEnt )
 	if Pointshop2.ClientSettings.GetSetting( "BasicSettings.VisualsDisabled" ) then
 		if IsValid( trailEnt ) then
 			trailEnt:SetNoDraw( true )
 		end
 	end
+	if (IsValid(ply)) then
+		ply.cl_PS2_trailEnt = trailEnt
+	end
+end
+
+function ITEM:RemoveTrailClient(ply)
+	if (IsValid(ply)) then
+		ply.cl_PS2_trailEnt = nil
+	end
 end
 
 function ITEM:RemoveTrail( )
 	if SERVER then
+		local ply = self:GetOwner()
+		if IsValid(ply) then
+			self:ClientRPC( "RemoveTrailClient", ply )
+		end
 		SafeRemoveEntity( self.trailEnt )
 	end
 end

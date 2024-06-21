@@ -2,7 +2,7 @@ ITEM.baseClass	= "base_hat"
 ITEM.PrintName	= "Jump Pack"
 ITEM.Description = "Makes you jump higher!"
 ITEM.Price = {
-	points = 1000,
+	points = 20000,
 }
 
 ITEM.static.validSlots = {
@@ -44,33 +44,6 @@ function ITEM.static.getBaseOutfit( )
 											["children"] = {
 											},
 											["self"] = {
-												["Velocity"] = 300,
-												["UniqueID"] = "492751156",
-												["StickToSurface"] = false,
-												["EndSize"] = 50,
-												["Material"] = "particle/smokesprites_0005",
-												["NumberParticles"] = 10,
-												["Gravity"] = Vector(0, 0, -100),
-												["Collide"] = false,
-												["Position"] = Vector(0.84375, 0, 0),
-												["Sliding"] = false,
-												["Color1"] = Vector(200, 200, 200),
-												["AlignToSurface"] = false,
-												["ClassName"] = "particles",
-												["Bounce"] = 10.8,
-												["EditorExpand"] = true,
-												["Angles"] = Angle(0, -179.4375, 0),
-												["Spread"] = 0.2,
-												["Lighting"] = false,
-												["FireDelay"] = 0.01,
-												["StartSize"] = 5,
-												["PositionSpread"] = 0.1,
-											},
-										},
-										[2] = {
-											["children"] = {
-											},
-											["self"] = {
 												["Arguments"] = "jump@@0.5",
 												["UniqueID"] = "4206270507",
 												["Invert"] = true,
@@ -81,16 +54,16 @@ function ITEM.static.getBaseOutfit( )
 										},
 									},
 									["self"] = {
-										["Velocity"] = 300,
+										["Velocity"] = 200,
 										["DrawOrder"] = 1,
 										["UniqueID"] = "135234957",
 										["StickToSurface"] = false,
-										["EndSize"] = 10,
+										["EndSize"] = 6,
 										["Material"] = "sprites/flamelet1",
 										["EditorExpand"] = true,
 										["StartAlpha"] = 200,
 										["AirResistance"] = 4.8,
-										["StartSize"] = 5,
+										["StartSize"] = 3,
 										["Collide"] = false,
 										["Position"] = Vector(0.84375, 0, 0),
 										["Sliding"] = false,
@@ -102,9 +75,9 @@ function ITEM.static.getBaseOutfit( )
 										["ClassName"] = "particles",
 										["DoubleSided"] = false,
 										["Spread"] = 0.2,
-										["FireDelay"] = 0.01,
-										["NumberParticles"] = 10,
-										["DieTime"] = 1,
+										["FireDelay"] = 0.03,
+										["NumberParticles"] = 5,
+										["DieTime"] = 0.5,
 										["Color1"] = Vector(200, 200, 200),
 									},
 								},
@@ -160,12 +133,59 @@ end
 
 function ITEM:Think( )
 	KInventory.Items.base_hat.Think( self )
-	
-	if self:GetOwner( ):KeyDown( IN_JUMP ) then
-		self:GetOwner( ):SetVelocity( self:GetOwner( ):GetUp( ) * 6 )
-	end
+
+	--[[if self:GetOwner( ):KeyDown( IN_JUMP ) then
+		--self:GetOwner( ):SetVelocity( self:GetOwner( ):GetUp( ) * 2 )
+		if SERVER then
+			local owner = self:GetOwner()
+			if IsValid(owner) then
+				owner:SetVelocity( owner:GetUp( ) * 2 )
+			end
+		end
+	end]]--
 end
 Pointshop2.AddItemHook( "Think", ITEM )
+
+function ITEM:OnEquip()
+	KInventory.Items.base_hat.OnEquip( self )
+
+	local owner = self:GetOwner()
+	if IsValid(owner) then
+		owner.PS2_JP_Grav = 0.87
+		--print("JumpPack Gravity")
+	end
+end
+
+function ITEM:OnHolster()
+	KInventory.Items.base_hat.OnHolster( self )
+
+	local owner = self:GetOwner()
+	if IsValid(owner) then
+		owner.PS2_JP_Grav = nil
+		--print("Normal Gravity")
+		owner:SetGravity(1)
+	end
+end
+
+hook.Add( "KeyPress", "JumpPackEnGravModifier", function( ply, key )
+	if ( key == IN_JUMP ) then
+		if (IsValid(ply) and ply.PS2_JP_Grav and ply:Alive()) then
+			ply:SetGravity(ply.PS2_JP_Grav)
+			--print("Enable JP")
+		end
+	end
+end )
+
+hook.Add( "KeyRelease", "JumpPackRemGravModifier", function( ply, key )
+    if ( key == IN_JUMP ) then
+		if (ply.PS2_JP_Grav) then
+        	ply:SetGravity(1)
+			--print("Disable JP")
+		end
+    end
+end )
+
+
 
 function ITEM.static.getOutfitForModel( model )
 	return ITEM.static.getBaseOutfit( )

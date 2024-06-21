@@ -127,7 +127,11 @@ function PANEL:PaintActual( w, h )
 
 	pac.FrameNumber = pac.FrameNumber + 100
 	if pac.Think then pac.Think() end
-	
+
+	for k, v in pairs( self.Entity.pac_outfits or {} ) do
+		v:SetHide(false)
+	end
+
 	cam.Start3D( self.viewInfo.origin, self.viewInfo.angles, self.viewInfo.fov - 20, 0, 0, w, h, 5, 4096 )
 		cam.IgnoreZ( true )
 		render.SuppressEngineLighting( true )
@@ -155,6 +159,10 @@ function PANEL:PaintActual( w, h )
 		cam.IgnoreZ( false )
 		render.SuppressEngineLighting( false )
 	cam.End3D( )
+
+	for k, v in pairs( self.Entity.pac_outfits or {} ) do
+		v:SetHide(true)
+	end
 end
 
 vgui.Register( "DPreRenderedModelPanel", PANEL, "DModelPanel" )
