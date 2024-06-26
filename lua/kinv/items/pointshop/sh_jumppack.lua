@@ -45,7 +45,7 @@ function ITEM.static.getBaseOutfit( )
 											},
 											["self"] = {
 												["Arguments"] = "jump@@0.5",
-												["UniqueID"] = "4206270507",
+												["UniqueID"] = tostring(math.random(2000000000)),
 												["Invert"] = true,
 												["Event"] = "animation_event",
 												["Name"] = "jump",
@@ -56,7 +56,7 @@ function ITEM.static.getBaseOutfit( )
 									["self"] = {
 										["Velocity"] = 200,
 										["DrawOrder"] = 1,
-										["UniqueID"] = "135234957",
+										["UniqueID"] = tostring(math.random(2000000000)),
 										["StickToSurface"] = false,
 										["EndSize"] = 6,
 										["Material"] = "sprites/flamelet1",
@@ -85,7 +85,7 @@ function ITEM.static.getBaseOutfit( )
 							["self"] = {
 								["ClassName"] = "model",
 								["EditorExpand"] = true,
-								["UniqueID"] = "2613842725",
+								["UniqueID"] = tostring(math.random(2000000000)),
 								["Position"] = Vector(-6.09375, -5.125, 3.875),
 								["Size"] = 0.3,
 								["Bone"] = "spine",
@@ -99,7 +99,7 @@ function ITEM.static.getBaseOutfit( )
 							["self"] = {
 								["Angles"] = Angle(33.4375, 0, 0),
 								["ClassName"] = "model",
-								["UniqueID"] = "2559247851",
+								["UniqueID"] = tostring(math.random(2000000000)),
 								["Position"] = Vector(0.96875, 0, 5.78125),
 								["EditorExpand"] = true,
 								["Bone"] = "spine",
@@ -111,7 +111,7 @@ function ITEM.static.getBaseOutfit( )
 					["self"] = {
 						["Angles"] = Angle(-14.875, 91.375, 0),
 						["ClassName"] = "model",
-						["UniqueID"] = "709861256",
+						["UniqueID"] = tostring(math.random(2000000000)),
 						["Position"] = Vector(5.0625, -5.75, -2.09375),
 						["EditorExpand"] = true,
 						["Bone"] = "spine",
@@ -122,7 +122,7 @@ function ITEM.static.getBaseOutfit( )
 			},
 			["self"] = {
 				["EditorExpand"] = true,
-				["UniqueID"] = "1708383976",
+				["UniqueID"] = tostring(math.random(2000000000)),
 				["ClassName"] = "group",
 				["Name"] = "my outfit",
 				["Description"] = "add parts to me!",
@@ -153,6 +153,10 @@ function ITEM:OnEquip()
 	if IsValid(owner) then
 		owner.PS2_JP_Grav = 0.87
 		--print("JumpPack Gravity")
+
+		if owner:KeyDown( IN_JUMP ) then
+			owner:SetGravity(owner.PS2_JP_Grav)
+		end
 	end
 end
 
